@@ -180,7 +180,11 @@ int update_advertising(void) {
     struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
-    if (zmk_ble_active_profile_is_open()) {
+    if (IS_ENABLED(CONFIG_ZMK_BLE_DISABLE_ADVERTISING)) {
+        // LOCAL PATCH: USB-only dongle -- stay off the air. Falling through with
+        // ZMK_ADV_NONE also stops advertising if it is already running.
+        desired_adv = ZMK_ADV_NONE;
+    } else if (zmk_ble_active_profile_is_open()) {
         desired_adv = ZMK_ADV_CONN;
     } else if (!zmk_ble_active_profile_is_connected()) {
         desired_adv = ZMK_ADV_CONN;

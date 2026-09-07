@@ -114,6 +114,15 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
 
     raise_zmk_split_peripheral_status_changed(
         (struct zmk_split_peripheral_status_changed){.connected = is_connected});
+
+    // Advertising is otherwise only restarted from recycled(), which Zephyr calls once every
+    // reference to the connection has been released. If anything still holds one, this half
+    // never advertises again and stays invisible until it is physically reset. Kick it here
+    // too; a redundant bt_le_adv_start() just returns -EALREADY.
+    if (enabled) {
+        low_duty_advertising = false;
+        k_work_submit(&advertising_work);
+    }
 }
 
 static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_security_err err) {

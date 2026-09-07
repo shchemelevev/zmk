@@ -194,6 +194,15 @@ config ZMK_BLE_PASSKEY_ENTRY
     bool "Require passkey entry on the keyboard to complete pairing"
     select RING_BUFFER
 
+# LOCAL PATCH (not upstream ZMK): for a USB-only dongle, which never pairs to a host but
+# would otherwise advertise as an open, connectable BLE keyboard forever.
+config ZMK_BLE_DISABLE_ADVERTISING
+    bool "Never advertise as a BLE keyboard"
+    depends on ZMK_BLE
+    help
+      Suppresses HID advertising only. The BLE split transport is untouched, so a central
+      still scans for and connects to its peripherals.
+
 config BT_SMP_ALLOW_UNAUTH_OVERWRITE
     imply ZMK_BLE_PASSKEY_ENTRY
 
