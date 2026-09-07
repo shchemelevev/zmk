@@ -1,0 +1,7 @@
+# Copyright (c) 2026 Evgenii Shchemelev
+# SPDX-License-Identifier: MIT
+description: PIN-gated encrypted password vault behavior
+
+compatible: "zmk,behavior-vault"
+
+include: one_param.yaml
